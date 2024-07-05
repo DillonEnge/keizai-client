@@ -18,10 +18,6 @@ func (c *ControllerSystem) Setup(e []*ecs.Entity) error {
 	return nil
 }
 
-func (c *ControllerSystem) Draw(e []*ecs.Entity, screen *ebiten.Image) error {
-	return nil
-}
-
 func (c *ControllerSystem) Update(e []*ecs.Entity) error {
 	for _, v := range e {
 		if v.Query(components.POSITION, components.IMAGE, components.CONTROLLABLE, components.SPEED) {

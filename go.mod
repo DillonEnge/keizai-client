@@ -3,7 +3,7 @@ module github.com/DillonEnge/keizai-client
 go 1.22.1
 
 require (
-	github.com/DillonEnge/keizai-grpc v0.1.6
+	github.com/DillonEnge/keizai-grpc v0.1.7
 	github.com/google/uuid v1.6.0
 	github.com/hajimehoshi/ebiten/v2 v2.7.4
 	github.com/tinne26/etxt v0.0.8

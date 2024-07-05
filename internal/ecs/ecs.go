@@ -6,13 +6,11 @@ import (
 
 	"github.com/DillonEnge/keizai-client/internal/components"
 	"github.com/google/uuid"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type System interface {
 	Setup([]*Entity) error
 	Update([]*Entity) error
-	Draw([]*Entity, *ebiten.Image) error
 }
 
 type Entity struct {

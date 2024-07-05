@@ -6,7 +6,6 @@ import (
 
 	"github.com/DillonEnge/keizai-client/internal/components"
 	"github.com/DillonEnge/keizai-client/internal/ecs"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type WiggleSystem struct{}
@@ -16,10 +15,6 @@ func NewWiggleSystem() *WiggleSystem {
 }
 
 func (w *WiggleSystem) Setup(e []*ecs.Entity) error {
-	return nil
-}
-
-func (w *WiggleSystem) Draw(e []*ecs.Entity, screen *ebiten.Image) error {
 	return nil
 }
 

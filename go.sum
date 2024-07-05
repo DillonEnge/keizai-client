@@ -2,6 +2,8 @@ github.com/DillonEnge/keizai-grpc v0.1.5 h1:hzz1j5e2le4klnlGiEbF7jaTtq5dXaAh9Kws
 github.com/DillonEnge/keizai-grpc v0.1.5/go.mod h1:uiaHBTuJ6LYv6rrsqr9CdX6Jg8OHgtbCzQhHj72MdvA=
 github.com/DillonEnge/keizai-grpc v0.1.6 h1:rOpyBq31znQG3H8LV8oSTyuPQP7RhMjdxasGAPikzyY=
 github.com/DillonEnge/keizai-grpc v0.1.6/go.mod h1:uiaHBTuJ6LYv6rrsqr9CdX6Jg8OHgtbCzQhHj72MdvA=
+github.com/DillonEnge/keizai-grpc v0.1.7 h1:sUWpVx+3DCmV0M1PUxbZSoPnQsnjs+ZGkFL7Xpqqlgs=
+github.com/DillonEnge/keizai-grpc v0.1.7/go.mod h1:uiaHBTuJ6LYv6rrsqr9CdX6Jg8OHgtbCzQhHj72MdvA=
 github.com/ebitengine/gomobile v0.0.0-20240518074828-e86332849895 h1:48bCqKTuD7Z0UovDfvpCn7wZ0GUZ+yosIteNDthn3FU=
 github.com/ebitengine/gomobile v0.0.0-20240518074828-e86332849895/go.mod h1:XZdLv05c5hOZm3fM2NlJ92FyEZjnslcMcNRrhxs8+8M=
 github.com/ebitengine/hideconsole v1.0.0 h1:5J4U0kXF+pv/DhiXt5/lTz0eO5ogJ1iXb8Yj1yReDqE=

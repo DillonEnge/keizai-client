@@ -6,7 +6,6 @@ import (
 
 	"github.com/DillonEnge/keizai-client/internal/components"
 	"github.com/DillonEnge/keizai-client/internal/ecs"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type AiControllerSystem struct {
@@ -14,10 +13,6 @@ type AiControllerSystem struct {
 
 func NewAiControllerSystem() *AiControllerSystem {
 	return &AiControllerSystem{}
-}
-
-func (a *AiControllerSystem) Draw(e []*ecs.Entity, screen *ebiten.Image) error {
-	return nil
 }
 
 func (a *AiControllerSystem) Update(e []*ecs.Entity) error {

@@ -79,22 +79,11 @@ func main() {
 	ebiten.SetWindowSize(1280, 720)
 	ebiten.SetWindowTitle("KeiZai")
 
-	robotoFont := fonts.T
-
-	fontLib := etxt.NewFontLibrary()
-	_, err = fontLib.ParseFontBytes(robotoFont)
-	// _, _, err = fontLib.ParseDirFonts("assets/fonts")
+	// create a new text renderer and configure it
+	txtRenderer, err := newTxtRenderer()
 	if err != nil {
 		log.Fatal("Error while loading fonts: " + err.Error())
 	}
-
-	// create a new text renderer and configure it
-	txtRenderer := etxt.NewStdRenderer()
-	glyphsCache := etxt.NewDefaultCache(10 * 1024 * 1024) // 10MB
-	txtRenderer.SetCacheHandler(glyphsCache.NewHandler())
-	txtRenderer.SetFont(fontLib.GetFont("Roboto"))
-	txtRenderer.SetAlign(etxt.Bottom, etxt.Left)
-	txtRenderer.SetSizePx(12)
 
 	es := []*ecs.Entity{
 		entities.NewPlayerEntity(nil, 15, 15, 20, 20, 2),
@@ -104,10 +93,13 @@ func main() {
 
 	g := game.NewGame(ctx, client, txtRenderer, es...)
 
+	ebiten.SetWindowClosingHandled(true)
+
 	s := []ecs.System{
-		systems.NewRenderSystem(),
+		// systems.NewRenderSystem(),
 		systems.NewControllerSystem(),
 		systems.NewNetwork(ctx, client, g),
+		systems.NewWindowCloseSystem(client),
 	}
 
 	err = g.AddSystems(s...)
@@ -116,9 +108,7 @@ func main() {
 	}
 
 	if err := ebiten.RunGame(g); err != nil {
-		if err == nil {
-			slog.Error("game terminated")
-		}
+		slog.Error("game terminated", "err", err)
 		log.Fatal(err)
 	}
 }
@@ -133,4 +123,25 @@ func newClientTLS(r io.Reader, serverNameOverride string) (credentials.Transport
 		return nil, fmt.Errorf("credentials: failed to append certificates")
 	}
 	return credentials.NewTLS(&tls.Config{ServerName: serverNameOverride, RootCAs: cp}), nil
+}
+
+func newTxtRenderer() (*etxt.Renderer, error) {
+	robotoFont := fonts.T
+
+	fontLib := etxt.NewFontLibrary()
+	_, err := fontLib.ParseFontBytes(robotoFont)
+	// _, _, err = fontLib.ParseDirFonts("assets/fonts")
+	if err != nil {
+		return nil, err
+	}
+
+	// create a new text renderer and configure it
+	txtRenderer := etxt.NewStdRenderer()
+	glyphsCache := etxt.NewDefaultCache(10 * 1024 * 1024) // 10MB
+	txtRenderer.SetCacheHandler(glyphsCache.NewHandler())
+	txtRenderer.SetFont(fontLib.GetFont("Roboto"))
+	txtRenderer.SetAlign(etxt.Bottom, etxt.Left)
+	txtRenderer.SetSizePx(12)
+
+	return txtRenderer, nil
 }

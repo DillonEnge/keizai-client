@@ -11,7 +11,6 @@ import (
 	"github.com/DillonEnge/keizai-client/internal/entities"
 	"github.com/DillonEnge/keizai-client/internal/game"
 	keizai_grpc "github.com/DillonEnge/keizai-grpc"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Network struct {
@@ -47,7 +46,7 @@ func (n *Network) Setup(e []*ecs.Entity) error {
 			go n.StartGetPositionStream(v)
 		}
 	}
-	go n.StartGetEntityIdsStream(e)
+	go n.StartGetEntityIdsStream()
 	return nil
 }
 
@@ -64,6 +63,7 @@ func (n *Network) Update(e []*ecs.Entity) error {
 			p, ok := v.Components[components.POSITION].(components.Position)
 			if !ok {
 				slog.Error("failed to cast to position component")
+				return fmt.Errorf("failed to cast to position component")
 			}
 			go n.Client.UpdatePosition(context.Background(), &keizai_grpc.UpdatePositionRequest{
 				Id:       v.Id,
@@ -74,14 +74,11 @@ func (n *Network) Update(e []*ecs.Entity) error {
 	return nil
 }
 
-func (n *Network) Draw(e []*ecs.Entity, screen *ebiten.Image) error {
-	return nil
-}
-
-func (n *Network) StartGetEntityIdsStream(e []*ecs.Entity) {
+func (n *Network) StartGetEntityIdsStream() {
 	stream, err := n.Client.GetEntityIds(context.Background(), nil)
 	if err != nil {
-		panic(err)
+		slog.Error("failed to start GetEntityIds stream", "err", err)
+		return
 	}
 
 	for {
@@ -91,8 +88,8 @@ func (n *Network) StartGetEntityIdsStream(e []*ecs.Entity) {
 			break
 		}
 		for _, v := range res.Ids {
-			if !slices.ContainsFunc(e, func(e *ecs.Entity) bool {
-				return e.Id == v
+			if !slices.ContainsFunc(n.Game.Entities, func(entity *ecs.Entity) bool {
+				return entity.Id == v
 			}) {
 				n.UpdateCh <- func() error {
 					r := entities.NewRemotePlayer(v, 10, 10, 10, 10)
@@ -103,13 +100,27 @@ func (n *Network) StartGetEntityIdsStream(e []*ecs.Entity) {
 				}
 			}
 		}
+		for i, v := range n.Game.Entities {
+			if v.Query(components.REMOTE) {
+				if !slices.ContainsFunc(res.Ids, func(id string) bool {
+					return id == v.Id
+				}) {
+					n.UpdateCh <- func() error {
+						v.Cancel()
+						n.Game.Entities = append(n.Game.Entities[:i], n.Game.Entities[i+1:]...)
+						return nil
+					}
+				}
+			}
+		}
 	}
 }
 
 func (n *Network) StartGetPositionStream(e *ecs.Entity) {
 	stream, err := n.Client.GetPosition(e.Ctx, &keizai_grpc.GetPositionRequest{Id: e.Id})
 	if err != nil {
-		panic(err)
+		slog.Error("failed to start GetPosition stream", "err", err)
+		return
 	}
 	for {
 		select {
@@ -125,7 +136,7 @@ func (n *Network) StartGetPositionStream(e *ecs.Entity) {
 		n.UpdateCh <- func() error {
 			p, ok := e.Components[components.POSITION].(components.Position)
 			if !ok {
-				panic("failed to cast to position component")
+				return fmt.Errorf("failed to cast to position component")
 			}
 			p.X, p.Y = int(v.Position.X), int(v.Position.Y)
 			e.Components[components.POSITION] = p

@@ -3,7 +3,10 @@ package game
 import (
 	"context"
 	"fmt"
+	"image/color"
+	"log/slog"
 
+	"github.com/DillonEnge/keizai-client/internal/components"
 	"github.com/DillonEnge/keizai-client/internal/ecs"
 	"github.com/DillonEnge/keizai-client/internal/statemanagement"
 	"github.com/DillonEnge/keizai-client/internal/states"
@@ -86,11 +89,34 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	g.FSM.State.Draw(screen)
 
-	for _, v := range g.Systems {
-		if err := v.Draw(g.Entities, screen); err != nil {
-			panic(err)
+	for _, v := range g.Entities {
+		if ok := v.Query(components.POSITION, components.IMAGE); ok {
+			p, ok := v.Components[components.POSITION].(components.Position)
+			if !ok {
+				slog.Error("failed to cast component.", "id", v.Id)
+			}
+
+			d := ebiten.DrawImageOptions{}
+			d.GeoM.Translate(
+				float64(p.X),
+				float64(p.Y),
+			)
+			i, ok := v.Components[components.IMAGE].(components.Image)
+			if !ok {
+				slog.Error("failed to cast component")
+			}
+
+			i.Image.Fill(color.White)
+
+			screen.DrawImage(i.Image, &d)
+			// slog.Info("drawing entity", "id", v.Id, "pos", v.Components[POSITION].(*PositionComponent))
 		}
 	}
+	// for _, v := range g.Systems {
+	// 	if err := v.Draw(g.Entities, screen); err != nil {
+	// 		slog.Error("failed to draw system", "system", v)
+	// 	}
+	// }
 
 	// g.TextRenderer.SetTarget(screen)
 	// g.TextRenderer.SetColor(color.White)

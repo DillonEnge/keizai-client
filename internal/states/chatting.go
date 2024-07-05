@@ -15,7 +15,7 @@ func NewChattingState() *ChattingState {
 
 func (c *ChattingState) Update() error {
 	if err := c.ProcessInput(); err != nil {
-		panic(err)
+		return err
 	}
 	return nil
 }
