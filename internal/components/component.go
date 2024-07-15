@@ -85,3 +85,28 @@ type Remote struct{}
 func NewRemote() Remote {
 	return Remote{}
 }
+
+type Grid struct {
+	Height int
+	Width  int
+}
+
+func NewGrid(w, h int) Grid {
+	return Grid{
+		Height: h,
+		Width:  w,
+	}
+}
+
+type GridPosition struct {
+	Position
+}
+
+func NewGridPosition(x, y int) GridPosition {
+	return GridPosition{
+		Position{
+			X: x,
+			Y: y,
+		},
+	}
+}

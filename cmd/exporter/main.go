@@ -32,6 +32,8 @@ func main() {
 		case "arm64":
 			path = "dist/darwin/arm64/Keizai.app"
 		}
+	case "windows":
+		path = "dist/windows/keizai"
 	}
 
 	if path == "" {

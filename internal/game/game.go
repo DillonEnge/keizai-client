@@ -112,15 +112,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			// slog.Info("drawing entity", "id", v.Id, "pos", v.Components[POSITION].(*PositionComponent))
 		}
 	}
-	// for _, v := range g.Systems {
-	// 	if err := v.Draw(g.Entities, screen); err != nil {
-	// 		slog.Error("failed to draw system", "system", v)
-	// 	}
-	// }
-
-	// g.TextRenderer.SetTarget(screen)
-	// g.TextRenderer.SetColor(color.White)
-	// g.TextRenderer.Draw("Hello World", 0, screen.Bounds().Dy())
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

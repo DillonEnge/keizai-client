@@ -13,5 +13,6 @@ func NewPlayerEntity(id *string, w, h, x, y, speed int) *ecs.Entity {
 		components.NewControllable(),
 		components.NewSpeed(speed),
 		components.NewNetwork(),
+		components.NewGridPosition(x, y),
 	)
 }
